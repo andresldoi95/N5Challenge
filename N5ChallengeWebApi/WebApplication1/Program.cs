@@ -1,5 +1,11 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using N5ChallengeWebApiApplication.Features.Commands;
+using N5ChallengeWebApiApplication.Features.Queries;
+using N5ChallengeWebApiApplication.Mappings;
 using N5ChallengeWebApiDomain;
+using N5ChallengeWebApiInfrastructure.Persistence.Context.Implementations;
+using N5ChallengeWebApiInfrastructure.Persistence.Context.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +18,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<N5ChallengeDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("N5ChallengeDB")));
+
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(RequestPermissionCommand).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(GetAllPermissionsQuery).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(ModifyPermissionCommand).Assembly);
+});
 
 var app = builder.Build();
 

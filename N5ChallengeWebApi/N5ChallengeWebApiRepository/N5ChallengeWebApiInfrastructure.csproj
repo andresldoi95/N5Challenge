@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\N5ChallengeWebApiDomain\N5ChallengeWebApiDomain.csproj" />
+  </ItemGroup>
+
 </Project>
