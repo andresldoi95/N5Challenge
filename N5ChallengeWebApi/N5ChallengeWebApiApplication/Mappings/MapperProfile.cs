@@ -11,6 +11,7 @@ namespace N5ChallengeWebApiApplication.Mappings
             CreateMap<Permission, RequestedPermission>();
             CreateMap<Permission, PermissionView>();
             CreateMap<ModifyPermission, Permission>();
+            CreateMap<Permission, N5ChallengeWebApiDomain.Entities.ElasticSearch.Permission>();
         }
     }
 }

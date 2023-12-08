@@ -4,10 +4,21 @@ using N5ChallengeWebApiApplication.Features.Commands;
 using N5ChallengeWebApiApplication.Features.Queries;
 using N5ChallengeWebApiApplication.Mappings;
 using N5ChallengeWebApiDomain;
+using N5ChallengeWebApiDomain.Seeders;
 using N5ChallengeWebApiInfrastructure.Persistence.Context.Implementations;
 using N5ChallengeWebApiInfrastructure.Persistence.Context.Interfaces;
+using N5ChallengeWebApiInfrastructure.Persistence.Repositories.Implementations;
+using N5ChallengeWebApiInfrastructure.Persistence.Repositories.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add logger
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 
@@ -22,6 +33,7 @@ builder.Services.AddDbContext<N5ChallengeDBContext>(options =>
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IElasticSearchRepository, ElasticSearchRepository>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -29,6 +41,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GetAllPermissionsQuery).Assembly);
     cfg.RegisterServicesFromAssembly(typeof(ModifyPermissionCommand).Assembly);
 });
+
 
 var app = builder.Build();
 
@@ -45,6 +58,8 @@ using (var scope = app.Services.CreateScope())
     if (dbContext != null)
     {
         dbContext.Database.Migrate();
+        var seeder = new PermissionTypeSeeder();
+        seeder.Seed(dbContext);
     }
 }
 

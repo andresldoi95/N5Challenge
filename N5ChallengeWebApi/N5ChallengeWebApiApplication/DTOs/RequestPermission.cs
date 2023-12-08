@@ -8,8 +8,8 @@ namespace N5ChallengeWebApiApplication.DTOs
 {
     public class RequestPermission
     {
-        public string EmployeeForename { get; set; }
-        public string EmployeeSurname { get; set; }
+        public required string EmployeeForename { get; set; }
+        public required string EmployeeSurname { get; set; }
         public int PermissionTypeId { get; set; }
     }
 }
